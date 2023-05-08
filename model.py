@@ -10,12 +10,11 @@ class Model:
 
     def get_image(self, prompt: str, negative_prompt: str, width=512, height=768) -> Image:
         return \
-            self.pipe(prompt, negative_prompt=negative_prompt, num_inference_steps=28, width=width,
+            self.pipe(prompt=prompt, negative_prompt=negative_prompt, num_inference_steps=28, width=width,
                       height=height).images[0]
 
     def get_save_image(self, prompt: str, negative_prompt: str, width=512, height=768):
         filename = f'picture#{self.i}.png'
-        self.i+=1
+        self.i += 1
         self.get_image(prompt, negative_prompt, width, height).save(filename)
         return filename
-
