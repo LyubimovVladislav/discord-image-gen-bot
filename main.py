@@ -25,9 +25,9 @@ async def on_ready():
 @client.tree.command(name='example', description='See usage example', guild=GUILD_OBJ)
 async def example(interaction: discord.Message.interaction):
     await interaction.response.send_message(
-        'Prompt should be including tags. Example prompt: "masterpiece, best quality, 1girl, cat ears, blush,'
+        'Prompt should be including tags.\nExample prompt: "masterpiece, best quality, 1girl, cat ears, blush,'
         ' nose blush, white hair, red eyes, smile, open mouth, white background, simple background,  hair ornament"\n' +
-        'Negative-Prompt should be excluding tags. Example Negative-Prompt: "nsfw, nude, lowres,bad anatomy, bad hands,'
+        'Negative-Prompt should be excluding tags.\nExample Negative-Prompt: "nsfw, nude, lowres,bad anatomy, bad hands,'
         ' error, text, missing fingers, extra digit, fewer digits, cropped,'
         ' worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"',
     )
