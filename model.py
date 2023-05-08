@@ -15,6 +15,7 @@ class Model:
 
     def get_save_image(self, prompt: str, negative_prompt: str, width=512, height=768):
         filename = f'picture#{self.i}.png'
+        i+=1
         self.get_image(prompt, negative_prompt, width, height).save(filename)
         return filename
 
