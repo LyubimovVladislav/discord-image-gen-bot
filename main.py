@@ -7,6 +7,7 @@ import json
 from model import Model
 
 synced = False
+generates = False
 try:
     with open('config.json') as f:
         config = json.load(f)
@@ -43,20 +44,25 @@ async def example(interaction: discord.Message.interaction):
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
+    global generates
+    if generates:
+        await interaction.response.send_message('Wait until the previous request completes')
+    generates = True
     await interaction.response.defer(thinking=True)
     filename = await asyncio.to_thread(model.get_save_image, prompt=prompt, negative_prompt=negative_prompt,
                                        height=height, width=width)
-    if filename is None:
-        await interaction.response.send_message('Wait until the previous request completes')
     try:
         await interaction.followup.send(file=discord.File(filename=filename, fp=filename))
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
+        generates = False
+    generates = False
 
 
 @client.tree.command(name='reset', description='Resets the bot', guild=GUILD_OBJ)
 async def reset(interaction: discord.Message.interaction):
-    await model.manual_reset()
+    global generates
+    generates = False
     await interaction.response.send_message('Done!')
 
 

@@ -7,7 +7,6 @@ class Model:
         self.pipe = StableDiffusionPipeline.from_pretrained("Ojimi/anime-kawai-diffusion", safety_checker=None)
         self.pipe = self.pipe.to(device)
         self.i = 0
-        self.generates = False
         self.file_format = file_format
 
     def get_image(self, prompt, negative_prompt, width=512, height=768):
@@ -16,14 +15,7 @@ class Model:
                       height=height).images[0]
 
     def get_save_image(self, prompt, negative_prompt, width=512, height=768):
-        if self.generates:
-            return None
-        self.generates = True
         filename = f'picture_{self.i}.{self.file_format}'
         self.i += 1
         self.get_image(prompt, negative_prompt, width, height).save(filename)
-        self.generates = False
         return filename
-
-    async def manual_reset(self):
-        self.generates = False
