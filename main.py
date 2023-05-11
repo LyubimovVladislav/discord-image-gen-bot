@@ -51,8 +51,8 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
         await interaction.response.send_message('Wait until the previous request completes')
         return
     generates = True
-    await interaction.response.defer(thinking=True)
     try:
+        await interaction.response.defer(thinking=True)
         filename, filepath = await asyncio.to_thread(model.get_save_image, prompt=prompt,
                                                      negative_prompt=negative_prompt,
                                                      height=height, width=width)
