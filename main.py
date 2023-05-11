@@ -3,6 +3,7 @@ import asyncio
 from discord.ext import commands
 from discord import app_commands
 import json
+import os
 
 from model import Model
 
@@ -72,5 +73,8 @@ async def reset(interaction: discord.Message.interaction):
 
 
 if __name__ == '__main__':
+    folder = 'images'
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     model = Model(file_format=config['file_format'])
     client.run(config['key'])
