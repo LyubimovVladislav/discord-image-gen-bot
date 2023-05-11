@@ -35,7 +35,7 @@ async def example(interaction: discord.Message.interaction):
 
 @client.tree.command(name='image', description='Generate an image', guild=GUILD_OBJ)
 @app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude')
-async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str):
+async def generate(interaction: discord.Message.interaction, prompt, negative_prompt):
     global model
     filename = await asyncio.get_running_loop().run_in_executor(None, model.get_save_image(prompt=prompt,
                                                                                            negative_prompt=negative_prompt))
