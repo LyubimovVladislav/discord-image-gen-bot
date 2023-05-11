@@ -52,10 +52,13 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     generates = True
     await interaction.response.defer(thinking=True)
     try:
-        filename = await asyncio.to_thread(model.get_save_image, prompt=prompt, negative_prompt=negative_prompt,
-                                           height=height, width=width)
-        content = f'Prompt: {prompt}\nNegative prompt: {negative_prompt if not negative_prompt == DEFAULT_NEGATIVE else "default"}\nResolution: {width}x{height}'
-        await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filename))
+        filename, filepath = await asyncio.to_thread(model.get_save_image, prompt=prompt,
+                                                     negative_prompt=negative_prompt,
+                                                     height=height, width=width)
+        content = f'Prompt: {prompt}\nNegative prompt: ' \
+                  f'{negative_prompt if not negative_prompt == DEFAULT_NEGATIVE else "default"}' \
+                  f'\nResolution: {width}x{height}'
+        await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filepath))
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
     generates = False
