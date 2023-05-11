@@ -38,6 +38,7 @@ async def example(interaction: discord.Message.interaction):
     await interaction.response.send_message(EXAMPLE)
 
 
+@client.tree.command(name='i', description='Generate an image', guild=GUILD_OBJ)
 @client.tree.command(name='image', description='Generate an image', guild=GUILD_OBJ)
 @app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude')
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE,
@@ -46,11 +47,13 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     await interaction.response.defer(thinking=True)
     filename = await asyncio.to_thread(model.get_save_image, prompt=prompt, negative_prompt=negative_prompt,
                                        height=height, width=width)
+    if filename is None:
+        await interaction.response.send_message('Wait until the previous request completes')
     try:
         await interaction.followup.send(file=discord.File(filename=filename, fp=filename))
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
-    await interaction.response.send_message(f'{prompt}, {negative_prompt}')
+
 
 
 @client.tree.command(name='reset', description='Resets the bot', guild=GUILD_OBJ)
@@ -60,5 +63,5 @@ async def reset(interaction: discord.Message.interaction):
 
 
 if __name__ == '__main__':
-    model = Model(file_format=config['file_format'])
+    # model = Model(file_format=config['file_format'])
     client.run(config['key'])

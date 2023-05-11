@@ -16,7 +16,7 @@ class Model:
                       height=height).images[0]
 
     def get_save_image(self, prompt, negative_prompt, width=512, height=768):
-        if not self.generates:
+        if self.generates:
             return None
         self.generates = True
         filename = f'picture_{self.i}.{self.file_format}'
