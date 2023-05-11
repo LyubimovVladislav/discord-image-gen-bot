@@ -9,7 +9,7 @@ from model import Model
 synced = False
 generates = False
 try:
-    with open('example_config.json') as f:
+    with open('config.json') as f:
         config = json.load(f)
 except Exception as e:
     print(e)
