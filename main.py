@@ -60,5 +60,5 @@ async def reset(interaction: discord.Message.interaction):
 
 
 if __name__ == '__main__':
-    model = Model()
+    model = Model(file_format=config['file_format'])
     client.run(config['key'])
