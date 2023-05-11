@@ -7,7 +7,6 @@ import os
 
 from model import Model
 
-synced = False
 generates = False
 try:
     with open('config.json') as f:
@@ -26,11 +25,10 @@ client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['comm
 @client.event
 async def on_ready():
     await client.wait_until_ready()
-    if not synced:
-        try:
-            await client.tree.sync(guild=GUILD_OBJ)
-        except Exception as e:
-            print(e)
+    try:
+        await client.tree.sync(guild=GUILD_OBJ)
+    except Exception as e:
+        print(e)
     print(f'Logged in as {client.user}')
     print('Ready!')
 
