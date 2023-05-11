@@ -1,4 +1,4 @@
 # discord-image-gen-bot
-requirements:
+requirements:<br>
 `pip install --upgrade diffusers transformers accelerate safetensors Pillow discord`
-place your discord api key in `config.json`
+<br>place your discord api key in `config.json`
