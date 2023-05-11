@@ -40,7 +40,8 @@ async def example(interaction: discord.Message.interaction):
 
 
 @client.tree.command(name='image', description='Generate an image', guild=GUILD_OBJ)
-@app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude')
+@app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude', height='Height of the image',
+                       width='Width of the image')
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
@@ -53,7 +54,9 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     try:
         filename = await asyncio.to_thread(model.get_save_image, prompt=prompt, negative_prompt=negative_prompt,
                                            height=height, width=width)
-        await interaction.followup.send(content=interaction.message, file=discord.File(filename=filename, fp=filename))
+
+        content = f'Prompt: {prompt}\nNegative prompt: {negative_prompt if not negative_prompt == DEFAULT_NEGATIVE else "default"}\nResolution: {width}x{height}'
+        await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filename))
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
         generates = False
