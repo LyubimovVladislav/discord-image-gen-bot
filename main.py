@@ -37,9 +37,9 @@ async def example(interaction: discord.Message.interaction):
 @app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude')
 async def generate(interaction: discord.Message.interaction, prompt, negative_prompt):
     global model
-    filename = await asyncio.get_running_loop().run_in_executor(None, model.get_save_image(prompt=prompt,
-                                                                                           negative_prompt=negative_prompt))
     await interaction.response.defer(thinking=True)
+    filename = await asyncio.get_running_loop().run_in_executor(None, model.get_save_image(prompt=prompt,
+                                                                                           negative_prompt=negative_prompt)
     try:
         await interaction.followup.send(file=discord.File(filename=filename, fp=filename))
     except Exception as e:
