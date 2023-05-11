@@ -2,12 +2,23 @@ import discord
 import asyncio
 from discord.ext import commands
 from discord import app_commands
+import json
 
 from model import Model
 
-GUILD_OBJ = discord.Object(id=403345142301458442)
 synced = False
-client = commands.Bot(intents=discord.Intents.all(), command_prefix='&')
+try:
+    with open('config.json') as f:
+        config = json.load(f)
+except Exception as e:
+    print(e)
+    exit(1)
+GUILD_OBJ = discord.Object(id=config['guild_id'])
+DEFAULT_NEGATIVE = config['default_negative_prompt']
+EXAMPLE = config['example']
+DEFAULT_HEIGHT = config['default_height']
+DEFAULT_WIDTH = config['default_width']
+client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['command_prefix'])
 
 
 @client.event
@@ -24,28 +35,30 @@ async def on_ready():
 
 @client.tree.command(name='example', description='See usage example', guild=GUILD_OBJ)
 async def example(interaction: discord.Message.interaction):
-    await interaction.response.send_message(
-        'Prompt should be including tags.\nExample prompt: "masterpiece, best quality, 1girl, cat ears, blush,'
-        ' nose blush, white hair, red eyes, smile, open mouth, white background, simple background,  hair ornament"\n' +
-        'Negative-Prompt should be excluding tags.\nExample Negative-Prompt: "nsfw, nude, lowres,bad anatomy, bad hands,'
-        ' error, text, missing fingers, extra digit, fewer digits, cropped,'
-        ' worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry"',
-    )
+    await interaction.response.send_message(EXAMPLE)
 
 
 @client.tree.command(name='image', description='Generate an image', guild=GUILD_OBJ)
 @app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude')
-async def generate(interaction: discord.Message.interaction, prompt, negative_prompt):
+async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE,
+                   height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
     await interaction.response.defer(thinking=True)
-    filename = await asyncio.get_running_loop().run_in_executor(None, model.get_save_image(prompt=prompt,
-                                                                                           negative_prompt=negative_prompt))
+    filename = await asyncio.to_thread(model.get_save_image, prompt=prompt, negative_prompt=negative_prompt,
+                                       height=height, width=width)
     try:
         await interaction.followup.send(file=discord.File(filename=filename, fp=filename))
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
+    await interaction.response.send_message(f'{prompt}, {negative_prompt}')
+
+
+@client.tree.command(name='reset', description='Resets the bot', guild=GUILD_OBJ)
+async def reset(interaction: discord.Message.interaction):
+    await model.manual_reset()
+    await interaction.response.send_message('Done!')
 
 
 if __name__ == '__main__':
     model = Model()
-    client.run()
+    client.run(config['key'])
