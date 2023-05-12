@@ -18,7 +18,7 @@ try:
     DEFAULT_WIDTH = config['default_width']
     client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['command_prefix'])
 except KeyError as e:
-    print(f'Cant find key value!\n{e}')
+    print(f'Cant find key value! Update your config file!\n{e}')
     exit(1)
 except (FileNotFoundError, OSError) as e:
     print(f'Cant open a config file!\n{e}')
