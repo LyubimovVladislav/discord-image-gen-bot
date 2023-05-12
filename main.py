@@ -10,16 +10,19 @@ from model import Model
 try:
     with open('config.json') as f:
         config = json.load(f)
-except Exception as e:
-    print(e)
+    GUILD_OBJ = discord.Object(id=config['guild_id'])
+    DEFAULT_NEGATIVE_SFW = config['default_sfw_negative_prompt']
+    DEFAULT_NEGATIVE_NSFW = config['default_nsfw_negative_prompt']
+    EXAMPLE = config['example']
+    DEFAULT_HEIGHT = config['default_height']
+    DEFAULT_WIDTH = config['default_width']
+    client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['command_prefix'])
+except KeyError as e:
+    print(f'Cant find key value!\n{e}')
     exit(1)
-GUILD_OBJ = discord.Object(id=config['guild_id'])
-DEFAULT_NEGATIVE_SFW = config['default_sfw_negative_prompt']
-DEFAULT_NEGATIVE_NSFW = config['default_nsfw_negative_prompt']
-EXAMPLE = config['example']
-DEFAULT_HEIGHT = config['default_height']
-DEFAULT_WIDTH = config['default_width']
-client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['command_prefix'])
+except (FileNotFoundError, OSError) as e:
+    print(f'Cant open a config file!\n{e}')
+    exit(1)
 semaphore = asyncio.BoundedSemaphore(1)
 
 
