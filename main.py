@@ -48,7 +48,7 @@ async def example(interaction: discord.Message.interaction):
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE_SFW,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
-    if interaction.channel is discord.TextChannel and interaction.channel.is_nsfw():
+    if interaction.channel is discord.channel.TextChannel and interaction.channel.nsfw:
         if negative_prompt == DEFAULT_NEGATIVE_SFW:
             negative_prompt = DEFAULT_NEGATIVE_NSFW
     if negative_prompt == DEFAULT_NEGATIVE_SFW:
