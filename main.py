@@ -7,7 +7,6 @@ import os
 
 from model import Model
 
-generates = False
 try:
     with open('config.json') as f:
         config = json.load(f)
@@ -20,6 +19,7 @@ EXAMPLE = config['example']
 DEFAULT_HEIGHT = config['default_height']
 DEFAULT_WIDTH = config['default_width']
 client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['command_prefix'])
+semaphore = asyncio.BoundedSemaphore(1)
 
 
 @client.event
@@ -44,29 +44,26 @@ async def example(interaction: discord.Message.interaction):
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
-    global generates
-    if generates:
-        await interaction.response.send_message('Wait until the previous request completes')
-        return
-    generates = True
     try:
         await interaction.response.defer(thinking=True)
-        filename, filepath = await asyncio.to_thread(model.get_save_image, prompt=prompt,
+        async with semaphore:
+            filename, filepath = await asyncio.to_thread(model.get_save_image, prompt=prompt,
                                                      negative_prompt=negative_prompt,
                                                      height=height, width=width)
         content = f'Prompt: {prompt}\nNegative prompt: ' \
                   f'{negative_prompt if not negative_prompt == DEFAULT_NEGATIVE else "default"}' \
                   f'\nResolution: {width}x{height}'
         await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filepath))
+    except ValueError as e:
+        print(f'A fatal error occurred:{e}\nExiting...')
+        await interaction.followup.send(f'A fatal error occurred: {e}')
+        exit(1)
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
-    generates = False
 
 
 @client.tree.command(name='reset', description='Resets the bot', guild=GUILD_OBJ)
 async def reset(interaction: discord.Message.interaction):
-    global generates
-    generates = False
     await interaction.response.send_message('Done!')
 
 
