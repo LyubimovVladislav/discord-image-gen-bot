@@ -51,19 +51,19 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     if interaction.channel is discord.channel.TextChannel and interaction.channel.nsfw:
         if negative_prompt == DEFAULT_NEGATIVE_SFW:
             negative_prompt = DEFAULT_NEGATIVE_NSFW
-    if negative_prompt == DEFAULT_NEGATIVE_SFW:
-        negative_prompt = 'default(SFW)'
-    elif negative_prompt == DEFAULT_NEGATIVE_NSFW:
-        negative_prompt = 'default(NSFW)'
-    content = f'Prompt: {prompt}\nNegative prompt: ' \
-              f'{negative_prompt}' \
-              f'\nResolution: {width}x{height}'
     try:
         await interaction.response.defer(thinking=True)
         async with semaphore:
             filename, filepath = await asyncio.to_thread(model.get_save_image, prompt=prompt,
                                                          negative_prompt=negative_prompt,
                                                          height=height, width=width)
+        if negative_prompt == DEFAULT_NEGATIVE_SFW:
+            negative_prompt = 'default(SFW)'
+        elif negative_prompt == DEFAULT_NEGATIVE_NSFW:
+            negative_prompt = 'default(NSFW)'
+        content = f'Prompt: {prompt}\nNegative prompt: ' \
+                  f'{negative_prompt}' \
+                  f'\nResolution: {width}x{height}'
         await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filepath))
     except ValueError as e:
         print(f'A fatal error occurred:{e}\nExiting...')
