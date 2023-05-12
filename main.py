@@ -14,7 +14,8 @@ except Exception as e:
     print(e)
     exit(1)
 GUILD_OBJ = discord.Object(id=config['guild_id'])
-DEFAULT_NEGATIVE = config['default_negative_prompt']
+DEFAULT_NEGATIVE_SFW = config['default_sfw_negative_prompt']
+DEFAULT_NEGATIVE_NSFW = config['default_nsfw_negative_prompt']
 EXAMPLE = config['example']
 DEFAULT_HEIGHT = config['default_height']
 DEFAULT_WIDTH = config['default_width']
@@ -41,18 +42,25 @@ async def example(interaction: discord.Message.interaction):
 @client.tree.command(name='image', description='Generate an image', guild=GUILD_OBJ)
 @app_commands.describe(prompt='Tags to include', negative_prompt='Tags to exclude', height='Height of the image',
                        width='Width of the image')
-async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE,
+async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE_SFW,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
+    if interaction.channel is discord.TextChannel and interaction.channel.is_nsfw():
+        if negative_prompt == DEFAULT_NEGATIVE_SFW:
+            negative_prompt = DEFAULT_NEGATIVE_NSFW
+    if negative_prompt == DEFAULT_NEGATIVE_SFW:
+        negative_prompt = 'default(SFW)'
+    elif negative_prompt == DEFAULT_NEGATIVE_NSFW:
+        negative_prompt = 'default(NSFW)'
+    content = f'Prompt: {prompt}\nNegative prompt: ' \
+              f'{negative_prompt}' \
+              f'\nResolution: {width}x{height}'
     try:
         await interaction.response.defer(thinking=True)
         async with semaphore:
             filename, filepath = await asyncio.to_thread(model.get_save_image, prompt=prompt,
-                                                     negative_prompt=negative_prompt,
-                                                     height=height, width=width)
-        content = f'Prompt: {prompt}\nNegative prompt: ' \
-                  f'{negative_prompt if not negative_prompt == DEFAULT_NEGATIVE else "default"}' \
-                  f'\nResolution: {width}x{height}'
+                                                         negative_prompt=negative_prompt,
+                                                         height=height, width=width)
         await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filepath))
     except ValueError as e:
         print(f'A fatal error occurred:{e}\nExiting...')
