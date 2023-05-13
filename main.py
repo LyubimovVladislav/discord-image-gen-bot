@@ -37,9 +37,10 @@ def free_memory_timer(delay: int):
     print(f'Daemon started at {datetime.now().strftime("%H:%M:%S")}')
     while True:
         sleep(delay)
-        if (last_active - datetime.now()).seconds // 60 >= 5 and model:
+        if ((last_active - datetime.now()).seconds // 60 >= 5) and (model is not None):
             print(f'vRam freed at {datetime.now().strftime("%H:%M:%S")}')
             del model
+            model = None
 
 
 @client.event
@@ -66,7 +67,7 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     global model
     global last_active
     global config
-    if not model:
+    if model is None:
         model = await asyncio.to_thread(Model, file_format=config['file_format'])
         print(f'vRam allocated at {datetime.now().strftime("%H:%M:%S")}')
     last_active = datetime.now()
@@ -104,7 +105,7 @@ if __name__ == '__main__':
     folder = 'images'
     if not os.path.exists(folder):
         os.makedirs(folder)
+    model = Model(file_format=config['file_format'])
     thread = threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
     thread.start()
-    model = Model(file_format=config['file_format'])
     client.run(config['key'])
