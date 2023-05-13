@@ -52,6 +52,8 @@ async def on_ready():
         print(e)
     print(f'Logged in as {client.user}')
     print('Ready!')
+    thread = threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
+    thread.start()
 
 
 @client.tree.command(name='example', description='See usage example', guild=GUILD_OBJ)
@@ -92,8 +94,6 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
         print(f'A fatal error occurred:{e}\nExiting...')
         await interaction.response.send_message(f'An error occurred: {e}')
         exit(1)
-    except discord.errors.NotFound as e:
-        await interaction.response.send_message(f'An error occurred: {e}')
     except Exception as e:
         await interaction.response.send_message(f'An error occurred: {e}')
 
@@ -108,6 +108,4 @@ if __name__ == '__main__':
     if not os.path.exists(folder):
         os.makedirs(folder)
     model = Model(file_format=config['file_format'])
-    thread = threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
-    thread.start()
     client.run(config['key'])
