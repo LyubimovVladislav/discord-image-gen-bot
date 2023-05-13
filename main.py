@@ -90,10 +90,12 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
         await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filepath))
     except ValueError as e:
         print(f'A fatal error occurred:{e}\nExiting...')
-        await interaction.followup.send(f'A fatal error occurred: {e}')
+        await interaction.response.send_message(f'An error occurred: {e}')
         exit(1)
+    except discord.errors.NotFound as e:
+        await interaction.response.send_message(f'An error occurred: {e}')
     except Exception as e:
-        await interaction.followup.send(f'An error occurred: {e}')
+        await interaction.response.send_message(f'An error occurred: {e}')
 
 
 @client.tree.command(name='reset', description='Resets the bot', guild=GUILD_OBJ)
