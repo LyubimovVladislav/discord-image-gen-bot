@@ -32,7 +32,6 @@ last_active = datetime.now()
 
 async def free_memory_timer(delay: int):
     global last_active
-    global model
     print(f'Daemon started at {datetime.now().strftime("%H:%M:%S")}')
     while True:
         await asyncio.sleep(delay=delay)
