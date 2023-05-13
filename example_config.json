@@ -7,5 +7,6 @@
   "command_prefix": "&",
   "default_height": 768,
   "default_width": 512,
-  "file_format": "png"
+  "file_format": "png",
+  "release_vram_timer_seconds": 300
 }

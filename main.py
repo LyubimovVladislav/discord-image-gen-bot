@@ -1,7 +1,10 @@
+import threading
+
 import discord
 import asyncio
 from discord.ext import commands
 from discord import app_commands
+from datetime import datetime
 import json
 import os
 
@@ -24,6 +27,18 @@ except (FileNotFoundError, OSError) as e:
     print(f'Cant open a config file!\n{e}')
     exit(1)
 semaphore = asyncio.BoundedSemaphore(1)
+last_active = datetime.now()
+
+
+async def free_memory_timer(delay: int):
+    global last_active
+    global model
+    print(f'Daemon started at {datetime.now().strftime("%H:%M:%S")}')
+    while True:
+        await asyncio.sleep(delay=delay)
+        if (last_active - datetime.now()).seconds // 60 >= 5 and model:
+            print(f'vRam freed at {datetime.now().strftime("%H:%M:%S")}')
+            del model
 
 
 @client.event
@@ -48,6 +63,11 @@ async def example(interaction: discord.Message.interaction):
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE_SFW,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
+    global last_active
+    global config
+    if not model:
+        model = await asyncio.to_thread(Model, file_format=config['file_format'])
+    last_active = datetime.now()
     if type(interaction.channel) is discord.channel.TextChannel and interaction.channel.nsfw:
         if negative_prompt == DEFAULT_NEGATIVE_SFW:
             negative_prompt = DEFAULT_NEGATIVE_NSFW
@@ -82,5 +102,7 @@ if __name__ == '__main__':
     folder = 'images'
     if not os.path.exists(folder):
         os.makedirs(folder)
-    model = Model(file_format=config['file_format'])
+    model = None
+    threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
+    # model = Model(file_format=config['file_format'])
     client.run(config['key'])
