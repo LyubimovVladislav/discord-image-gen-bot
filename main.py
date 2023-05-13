@@ -63,7 +63,6 @@ async def example(interaction: discord.Message.interaction):
                        width='Width of the image')
 async def generate(interaction: discord.Message.interaction, prompt: str, negative_prompt: str = DEFAULT_NEGATIVE_SFW,
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
-    global model
     global last_active
     if not model.is_active:
         await asyncio.to_thread(model.init())
