@@ -66,7 +66,7 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     global model
     global last_active
     if not model.is_active():
-        model = await asyncio.to_thread(model.init())
+        await asyncio.to_thread(model.init())
         print(f'vRam allocated at {datetime.now().strftime("%H:%M:%S")}')
     last_active = datetime.now()
     if type(interaction.channel) is discord.channel.TextChannel and interaction.channel.nsfw:
