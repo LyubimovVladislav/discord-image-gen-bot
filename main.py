@@ -35,7 +35,7 @@ def free_memory_timer(delay: int):
     print(f'Daemon started at {datetime.now().strftime("%H:%M:%S")}')
     while True:
         sleep(delay)
-        if ((last_active - datetime.now()).seconds // 60 >= 5) and model.is_active():
+        if ((last_active - datetime.now()).seconds // 60 >= 5) and model.is_active:
             print(f'vRam freed at {datetime.now().strftime("%H:%M:%S")}')
             model.delete()
 
@@ -65,7 +65,7 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
     global last_active
-    if not model.is_active():
+    if not model.is_active:
         await asyncio.to_thread(model.init())
         print(f'vRam allocated at {datetime.now().strftime("%H:%M:%S")}')
     last_active = datetime.now()
