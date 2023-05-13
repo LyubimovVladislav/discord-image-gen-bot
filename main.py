@@ -102,6 +102,7 @@ if __name__ == '__main__':
     folder = 'images'
     if not os.path.exists(folder):
         os.makedirs(folder)
-    threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
+    thread = threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
+    thread.start()
     model = Model(file_format=config['file_format'])
     client.run(config['key'])
