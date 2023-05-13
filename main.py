@@ -49,7 +49,7 @@ async def on_ready():
         print(e)
     print(f'Logged in as {client.user}')
     print('Ready!')
-    thread = threading.Thread(target=free_memory_timer, daemon=True)
+    thread = threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
     thread.start()
 
 
