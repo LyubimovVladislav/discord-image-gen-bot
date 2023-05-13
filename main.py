@@ -32,15 +32,12 @@ last_active = datetime.now()
 
 
 def free_memory_timer(delay: int):
-    global last_active
-    global model
     print(f'Daemon started at {datetime.now().strftime("%H:%M:%S")}')
     while True:
         sleep(delay)
-        if ((last_active - datetime.now()).seconds // 60 >= 5) and (model is not None):
+        if ((last_active - datetime.now()).seconds // 60 >= 5) and model.is_active():
             print(f'vRam freed at {datetime.now().strftime("%H:%M:%S")}')
-            del model
-            model = None
+            model.delete()
 
 
 @client.event
@@ -52,7 +49,7 @@ async def on_ready():
         print(e)
     print(f'Logged in as {client.user}')
     print('Ready!')
-    thread = threading.Thread(target=free_memory_timer, args=(config['release_vram_timer_seconds'],), daemon=True)
+    thread = threading.Thread(target=free_memory_timer, daemon=True)
     thread.start()
 
 
@@ -68,9 +65,8 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
                    height: int = DEFAULT_HEIGHT, width: int = DEFAULT_WIDTH):
     global model
     global last_active
-    global config
-    if model is None:
-        model = await asyncio.to_thread(Model, file_format=config['file_format'])
+    if not model.is_active():
+        model = await asyncio.to_thread(model.init())
         print(f'vRam allocated at {datetime.now().strftime("%H:%M:%S")}')
     last_active = datetime.now()
     if type(interaction.channel) is discord.channel.TextChannel and interaction.channel.nsfw:
