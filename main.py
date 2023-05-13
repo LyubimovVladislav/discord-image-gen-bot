@@ -6,6 +6,7 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
 import json
+from time import sleep
 import os
 
 from model import Model
@@ -34,7 +35,7 @@ def free_memory_timer(delay: int):
     global last_active
     print(f'Daemon started at {datetime.now().strftime("%H:%M:%S")}')
     while True:
-        await asyncio.sleep(delay=delay)
+        sleep(delay)
         if (last_active - datetime.now()).seconds // 60 >= 5 and model:
             print(f'vRam freed at {datetime.now().strftime("%H:%M:%S")}')
             del model
