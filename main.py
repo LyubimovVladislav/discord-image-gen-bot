@@ -67,6 +67,7 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
     global config
     if not model:
         model = await asyncio.to_thread(Model, file_format=config['file_format'])
+        print(f'vRam allocated at {datetime.now().strftime("%H:%M:%S")}')
     last_active = datetime.now()
     if type(interaction.channel) is discord.channel.TextChannel and interaction.channel.nsfw:
         if negative_prompt == DEFAULT_NEGATIVE_SFW:
