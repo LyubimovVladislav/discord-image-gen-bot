@@ -1,6 +1,7 @@
-diffusers
+diffusers~=0.16.1
 transformers
 accelerate
 safetensors
-pillow
-discord
+pillow~=9.5.0
+discord~=2.2.3
+torch~=2.0.1

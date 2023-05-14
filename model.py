@@ -1,11 +1,13 @@
 from diffusers import StableDiffusionPipeline
 from PIL import Image
 from datetime import datetime
+from torch import float16
 
 
 class Model:
     def __init__(self, *, device='cuda', file_format='png'):
-        self.pipe = StableDiffusionPipeline.from_pretrained("Ojimi/anime-kawai-diffusion", safety_checker=None)
+        self.pipe = StableDiffusionPipeline.from_pretrained("Ojimi/anime-kawai-diffusion",
+                                                            safety_checker=None, torch=float16)
         self.pipe = self.pipe.to(device)
         self.file_format = file_format
 
