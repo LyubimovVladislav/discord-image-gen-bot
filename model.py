@@ -18,7 +18,7 @@ class Model:
         now = datetime.now()
         filename = now.strftime("%d-%b-%Y_%H-%M-%S") + f'.{self.file_format}'
         filepath = "images/" + filename
-        self.get_image(prompt, negative_prompt, width, height).save(filepath)
+        self.get_image(prompt, negative_prompt, width, height).save(filepath, quality=95)
         delta = datetime.now() - now
         print(f'Elapsed time: {delta.seconds// 60}m:{delta.seconds % 60}s')
         return filename, filepath

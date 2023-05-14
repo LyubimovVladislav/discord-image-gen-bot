@@ -4,12 +4,28 @@ from discord.ext import commands
 from discord import app_commands
 import json
 import os
+import shutil
 
 from model import Model
 
 try:
+    if not os.path.exists('config.json'):
+        print('No config file detected, creating one...\n')
+        shutil.copy('example_config.json', 'config.json')
+
+        with open('config.json', 'r') as file:
+            data = file.read()
+
+        input_token = input("Provide the discord API access token: ").strip()
+        new_data = data.replace('Your_token_here', input_token)
+
+        with open('config.json', 'w') as file:
+            file.write(new_data)
+
+
     with open('config.json') as f:
         config = json.load(f)
+
     GUILD_OBJ = discord.Object(id=config['guild_id'])
     DEFAULT_NEGATIVE_SFW = config['default_sfw_negative_prompt']
     DEFAULT_NEGATIVE_NSFW = config['default_nsfw_negative_prompt']
@@ -17,11 +33,12 @@ try:
     DEFAULT_HEIGHT = config['default_height']
     DEFAULT_WIDTH = config['default_width']
     client = commands.Bot(intents=discord.Intents.all(), command_prefix=config['command_prefix'])
+
 except KeyError as e:
     print(f'Cant find key value! Update your config file!\n{e}')
     exit(1)
-except (FileNotFoundError, OSError) as e:
-    print(f'Cant open a config file!\n{e}')
+ except (FileNotFoundError, OSError) as e:
+    print(f'Cant open a config file.\n{e}')
     exit(1)
 semaphore = asyncio.BoundedSemaphore(1)
 
