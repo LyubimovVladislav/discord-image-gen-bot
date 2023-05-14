@@ -81,10 +81,6 @@ async def generate(interaction: discord.Message.interaction, prompt: str, negati
                   f'{negative_prompt}' \
                   f'\nResolution: {width}x{height}'
         await interaction.followup.send(content=content, file=discord.File(filename=filename, fp=filepath))
-    except ValueError as e:
-        print(f'A fatal error occurred:{e}\nExiting...')
-        await interaction.followup.send(f'A fatal error occurred: {e}')
-        exit(1)
     except Exception as e:
         await interaction.followup.send(f'An error occurred: {e}')
 
