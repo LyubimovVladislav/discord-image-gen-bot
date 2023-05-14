@@ -8,7 +8,6 @@ class Model:
         self.pipe = StableDiffusionPipeline.from_pretrained("Ojimi/anime-kawai-diffusion", safety_checker=None)
         self.pipe = self.pipe.to(device)
         self.file_format = file_format
-        self.is_active = True
 
     def get_image(self, prompt, negative_prompt, width=512, height=768):
         return \
@@ -19,14 +18,7 @@ class Model:
         now = datetime.now()
         filename = now.strftime("%d-%b-%Y_%H-%M-%S") + f'.{self.file_format}'
         filepath = "images/" + filename
-        self.get_image(prompt, negative_prompt, width, height).save(filepath)
+        self.get_image(prompt, negative_prompt, width, height).save(filepath, quality=95)
         delta = datetime.now() - now
-        print(f'Elapsed time: {delta.seconds // 60}m:{delta.seconds % 60}s')
+        print(f'Elapsed time: {delta.seconds// 60}m:{delta.seconds % 60}s')
         return filename, filepath
-
-    def init(self):
-        self.__init__(file_format=self.file_format)
-
-    def delete(self):
-        del self.pipe
-        self.is_active = False
