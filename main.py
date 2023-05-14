@@ -37,7 +37,7 @@ try:
 except KeyError as e:
     print(f'Cant find key value! Update your config file!\n{e}')
     exit(1)
- except (FileNotFoundError, OSError) as e:
+except (FileNotFoundError, OSError) as e:
     print(f'Cant open a config file.\n{e}')
     exit(1)
 semaphore = asyncio.BoundedSemaphore(1)
