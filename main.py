@@ -22,7 +22,6 @@ try:
         with open('config.json', 'w') as file:
             file.write(new_data)
 
-
     with open('config.json') as f:
         config = json.load(f)
 
