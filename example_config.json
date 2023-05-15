@@ -1,11 +1,13 @@
 {
   "key": "Your_token_here",
   "example": "Prompt should be including tags.\nExample prompt: \"masterpiece, best quality, 1girl, cat ears, blush, nose blush, white hair, red eyes, smile, open mouth, white background, simple background,  hair ornament\"\n Negative-Prompt should be excluding tags.\nExample Negative-Prompt: \"nsfw, nude, lowres, bad anatomy, bad hands, error, text, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry\"",
-  "default_sfw_negative_prompt": "nsfw, nude, bad anatomy, bad hands, error, text, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
-  "default_nsfw_negative_prompt": "bad anatomy, bad hands, error, text, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+  "default_negative_prompt": "nsfw, nude, bad anatomy, bad hands, error, text, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
   "guild_id": 403345142301458442,
   "command_prefix": "&",
   "default_height": 512,
   "default_width": 512,
-  "file_format": "jpg"
+  "file_format": "jpeg",
+  "image_save_quality": 95,
+  "remote_repo_id_or_local_repo_path": "Ojimi/anime-kawai-diffusion",
+  "half_precision_float": "True"
 }

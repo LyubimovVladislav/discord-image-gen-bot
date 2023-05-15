@@ -94,5 +94,10 @@ if __name__ == '__main__':
     folder = 'images'
     if not os.path.exists(folder):
         os.makedirs(folder)
-    model = Model(file_format=config['file_format'])
+    model = Model(
+        file_format=config['file_format'],
+        half_precision=config['half_precision_float'],
+        quality=config['image_save_quality'],
+        repository=config['remote_repo_id_or_local_repo_path']
+    )
     client.run(config['key'])
