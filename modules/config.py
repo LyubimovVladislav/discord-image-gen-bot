@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-import discord
 
 
 class Config:
@@ -23,10 +22,9 @@ class Config:
             with open('config.json') as f:
                 config = json.load(f)
 
-            self.guild = discord.Object(id=config['guild_id'])
+            self.guild = config['guild_id']
             self.default_negative_sfw = config['default_sfw_negative_prompt']
             self.default_negative_nsfw = config['default_nsfw_negative_prompt']
-            self.example_text = config['example']
             self.height = config['default_height']
             self.width = config['default_width']
             self.command_prefix = config['command_prefix']
