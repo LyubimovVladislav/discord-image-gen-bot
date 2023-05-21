@@ -128,6 +128,6 @@ if __name__ == '__main__':
         intents=discord.Intents.all(),
         command_prefix=config.command_prefix,
         guild_id=config.guild,
-        model=None
+        model=sd
     )
     bot.run(config.key)
