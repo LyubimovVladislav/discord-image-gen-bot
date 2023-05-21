@@ -1,6 +1,8 @@
 import discord
 from discord import ui
 
+from modules.parser import Parser
+
 
 class Modal(ui.Modal):
     def __init__(self, sampler, skip, resolution, gen_image):
@@ -22,6 +24,16 @@ class Modal(ui.Modal):
 
     async def on_submit(self, interaction: discord.Message.interaction):
         width, height = str(self.resolution).split('x')
-        await self.gen_image(interaction=interaction, sampler=self.sampler, skip=self.skip, width=width,
-                             height=height, prompt=self.prompt, n_prompt=self.n_prompt, scale=self.scale,
+        self.sampler = str(self.sampler)
+        self.skip = str(self.skip)
+        self.skip = int(self.skip) if self.skip and Parser.is_int(self.skip) else None
+        self.scale = str(self.scale)
+        self.scale = float(self.scale) if self.scale and Parser.is_float(self.scale) else None
+        self.seed = str(self.seed)
+        self.steps = str(self.steps)
+        self.steps = int(self.steps) if self.steps and Parser.is_int(self.steps) else None
+        self.prompt = str(self.prompt)
+        self.n_prompt = str(self.n_prompt)
+        await self.gen_image(interaction=interaction, sampler=self.sampler, skip=self.skip, width=int(width),
+                             height=int(height), prompt=self.prompt, n_prompt=self.n_prompt, scale=self.scale,
                              steps=self.steps, seed=self.seed)

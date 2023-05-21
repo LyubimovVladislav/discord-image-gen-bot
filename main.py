@@ -71,19 +71,10 @@ class Bot(commands.Bot):
                 await interaction.followup.send(f'An error occurred: {e}')
 
     async def generate_image(self, interaction: discord.Message.interaction,
-                             sampler, skip, height, width, prompt, n_prompt, scale, steps, seed):
+                             sampler: str, skip: int, height:int, width:int, prompt: str, n_prompt: str, scale: float,
+                             steps: int, seed: str):
         try:
             await interaction.response.defer(thinking=True)
-            sampler = str(sampler)
-            skip = str(skip)
-            skip = int(skip) if skip and Parser.is_int(skip) else None
-            scale = str(scale) 
-            scale = float(scale) if scale and Parser.is_float(scale) else None
-            seed = str(seed)
-            steps = str(steps) 
-            steps = int(steps) if steps and Parser.is_int(steps) else None
-            prompt = str(prompt)
-            n_prompt = str(n_prompt)
             async with semaphore:
                 filename, filepath = await asyncio.to_thread(self.model.generate_image,
                                                              sampler=sampler,
@@ -93,7 +84,7 @@ class Bot(commands.Bot):
                                                              steps=steps,
                                                              prompt=prompt,
                                                              negative_prompt=n_prompt,
-                                                             height=int(height), width=int(width))
+                                                             height=height, width=width)
             content = f'Prompt: {str(prompt).strip()}'
             await interaction.followup.send(content=content,
                                             file=discord.File(filename=filename, fp=filepath),
