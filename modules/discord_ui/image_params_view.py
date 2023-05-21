@@ -37,28 +37,26 @@ class ShowImageParams(ui.View):
         bn = ModalButton(label='Send', gen_image=gen_image)
         self.sampler = Menu(placeholder='Sampler', options=ShowImageParams._create_options_from_list(comp))
         self.clip_skip = Menu(placeholder='CLIP skip',
-                              options=self._create_number_options_from_list(range(1, 8)))
+                              options=self._create_options_from_list(range(1, 8)))
         self.resolution = Menu(placeholder='Resolution',
-                               options=[
-                                   discord.SelectOption(label='Square 512x512', value='512x512'),
-                                   discord.SelectOption(label='Square 768x768', value='768x768'),
-                                   discord.SelectOption(label='Square 1024x1024', value='1024x1024'),
-                                   discord.SelectOption(label='Portrait 512x768', value='512x768'),
-                                   discord.SelectOption(label='Portrait 512x1024', value='512x1024'),
-                                   discord.SelectOption(label='Portrait 768x1024', value='768x1024'),
-                                   discord.SelectOption(label='Album 768x512', value='768x512'),
-                                   discord.SelectOption(label='Album 1024x512', value='1024x512'),
-                                   discord.SelectOption(label='Album 1024x768', value='1024x768')
-                               ])
+                               options=self._create_resolution_options())
         self.add_item(self.sampler).add_item(self.clip_skip).add_item(self.resolution).add_item(bn)
 
     @staticmethod
-    def _create_options_from_list(compatible) -> [discord.SelectOption]:
-        return [discord.SelectOption(label=s, value=s) for s in compatible]
+    def _create_options_from_list(arr) -> [discord.SelectOption]:
+        return [discord.SelectOption(label=val, value=val) for val in arr]
 
     @staticmethod
-    def _create_number_options_from_list(arr: [int]) -> [discord.SelectOption]:
-        return [discord.SelectOption(label=i, value=i - 1) for i in arr]
+    def _create_resolution_options() -> [discord.SelectOption]:
+        return [discord.SelectOption(label='Square 512x512', value='512x512'),
+                discord.SelectOption(label='Square 768x768', value='768x768'),
+                discord.SelectOption(label='Square 1024x1024', value='1024x1024'),
+                discord.SelectOption(label='Portrait 512x768', value='512x768'),
+                discord.SelectOption(label='Portrait 512x1024', value='512x1024'),
+                discord.SelectOption(label='Portrait 768x1024', value='768x1024'),
+                discord.SelectOption(label='Album 768x512', value='768x512'),
+                discord.SelectOption(label='Album 1024x512', value='1024x512'),
+                discord.SelectOption(label='Album 1024x768', value='1024x768')]
 
     async def interaction_check(self, interaction: Interaction, /) -> bool:
         return await super().interaction_check(interaction)
