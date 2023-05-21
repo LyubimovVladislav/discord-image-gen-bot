@@ -1,7 +1,4 @@
 from datetime import datetime
-import sys
-import random
-import re as regex
 
 from diffusers import StableDiffusionPipeline, DPMSolverMultistepScheduler, EulerAncestralDiscreteScheduler, \
     KDPM2DiscreteScheduler, UniPCMultistepScheduler, DDPMScheduler, HeunDiscreteScheduler, \
@@ -11,6 +8,7 @@ import torch
 from transformers import CLIPTextModel
 
 from decorators.timer import timer
+from modules.parser import Parser
 
 
 class Model:
@@ -39,21 +37,21 @@ class Model:
         ).images[0]
 
     @timer
-    def generate_image(self, *, prompt, negative_prompt, width=512, height=768, sampler=None, skip=None, scale=None,
-                       steps=None, seed=None):
+    def generate_image(self, *, prompt: str, negative_prompt: str, width: int, height: int, sampler: str = None,
+                       skip: int = None, scale: float = None, steps: int = None, seed: str = None):
         filename = datetime.now().strftime("%d-%b-%Y_%H-%M-%S") + f'.{self.file_format}'
         filepath = "images/" + filename
         # model settings
         self._set_sampler(sampler)
-        self._set_clip_skip(skip)
-        generator = torch.Generator("cuda").manual_seed(self.get_seed(seed)) if seed else None
+        self._set_clip_skip(skip - 1 if skip else 0)
+        generator = torch.Generator("cuda").manual_seed(Parser.get_seed(seed)) if seed else None
         self._get_image(
             prompt=prompt,
             negative_prompt=negative_prompt,
             width=width,
             height=height,
-            scale=float(scale) if self.is_float(scale) else 7.5,
-            steps=int(steps) if steps and steps.is_digit() else 50,
+            scale=scale if scale else 7.5,
+            steps=steps if steps else 50,
             generator=generator
         ).save(filepath, quality=self.quality)
         return filename, filepath
@@ -104,33 +102,3 @@ class Model:
     @property
     def compatible(self):
         return [f"{i.__name__}" for i in self.pipe.scheduler.compatibles]
-
-    @staticmethod
-    def in_maxsize_range(s: str) -> bool:
-        return len(s) <= len(str(sys.maxsize))
-
-    @staticmethod
-    def is_proper_int(s: str) -> bool:
-        # As seed, torch accepts only long int, so it's required to parse string to int but not exceed the long range
-        # -9300000000000000000 already throws an exception(19 digits + sign) while 9999999999999999999 not(19 digits)
-        # for long int type
-        if not Model.in_maxsize_range(s):
-            return False
-        if s[0] in ('-', '+'):
-            return s[1:].isdigit()
-        return s.isdigit()
-
-    @staticmethod
-    def get_seed(s: str) -> int:
-        if not s:
-            raise ValueError('get_seed() exception: argument cant be empty')
-        if Model.is_proper_int(s):
-            return int(s)
-        random.seed(s)
-        return random.randrange(int('-' + '9' * (len(str(sys.maxsize)) - 1)), int('9' * len(str(sys.maxsize))))
-
-    @staticmethod
-    def is_float(s: str) -> bool:
-        if not s:
-            return False
-        return not regex.match(r'^[+-]?\d+\.\d*$', s) is None
