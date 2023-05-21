@@ -75,9 +75,12 @@ class Bot(commands.Bot):
         try:
             await interaction.response.defer(thinking=True)
             sampler = str(sampler)
+            skip = str(skip)
             skip = int(skip) if skip and Parser.is_int(skip) else None
+            scale = str(scale) 
             scale = float(scale) if scale and Parser.is_float(scale) else None
             seed = str(seed)
+            steps = str(steps) 
             steps = int(steps) if steps and Parser.is_int(steps) else None
             prompt = str(prompt)
             n_prompt = str(n_prompt)
