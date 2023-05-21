@@ -21,7 +21,7 @@ class Modal(ui.Modal):
         ui.View.add_item(self, item=self.seed)
 
     async def on_submit(self, interaction: discord.Message.interaction):
-        width, height = str(self.resolution.split('x'))
+        width, height = str(self.resolution).split('x')
         await self.gen_image(interaction=interaction, sampler=self.sampler, skip=self.skip, width=width,
                              height=height, prompt=self.prompt, n_prompt=self.n_prompt, scale=self.scale,
                              steps=self.steps, seed=self.seed)
