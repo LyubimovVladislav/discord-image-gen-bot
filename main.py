@@ -48,7 +48,7 @@ class Bot(commands.Bot):
 
             try:
                 await interaction.response.defer(thinking=True)
-                width, height = str(resolution.split('x'))
+                width, height = str(resolution).split('x')
                 async with semaphore:
                     filename, filepath = await asyncio.to_thread(self.model.generate_image,
                                                                  sampler=sampler,
