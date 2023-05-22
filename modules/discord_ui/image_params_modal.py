@@ -1,6 +1,7 @@
 import discord
 from discord import ui
 
+from modules.config import Config
 from modules.parser import Parser
 
 
@@ -13,8 +14,8 @@ class Modal(ui.Modal):
         self.resolution = resolution
         self.prompt = ui.TextInput(label='Prompt', style=discord.TextStyle.paragraph)
         self.n_prompt = ui.TextInput(label='Negative prompt', style=discord.TextStyle.paragraph, required=False)
-        self.scale = ui.TextInput(label='Guidance Scale', default='7.5', max_length=5)
-        self.steps = ui.TextInput(label='Sampling steps', default='50', max_length=5)
+        self.scale = ui.TextInput(label='Guidance Scale', default=str(Config.default_guidance_scale), max_length=5)
+        self.steps = ui.TextInput(label='Sampling steps', default=str(Config.default_num_inference_steps), max_length=5)
         self.seed = ui.TextInput(label='Seed', required=False, max_length=20)
         ui.View.add_item(self, item=self.prompt)
         ui.View.add_item(self, item=self.n_prompt)

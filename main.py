@@ -43,8 +43,11 @@ class Bot(commands.Bot):
                                skip='CLIP skip', scale='Guidance scale', seed='Initial seed')
         @app_commands.choices(sampler=create_sampler_choices_from_list(self.model.compatible))
         @app_commands.choices(resolution=create_resolution_choices())
-        async def generate(interaction: discord.Message.interaction, prompt: str, resolution: str, sampler: str,
-                           n_prompt: str = None, steps: int = 50, skip: int = 1, scale: float = 7.5, seed: str = ''):
+        async def generate(interaction: discord.Message.interaction, prompt: str,
+                           resolution: str = Config.default_resolution, sampler: str = Config.default_scheduler,
+                           n_prompt: str = None, steps: int = Config.default_num_inference_steps,
+                           skip: int = Config.default_clip_skip,
+                           scale: float = Config.default_guidance_scale, seed: str = ''):
 
             try:
                 await interaction.response.defer(thinking=True)
