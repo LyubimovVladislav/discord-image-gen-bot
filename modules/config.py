@@ -6,19 +6,19 @@ import shutil
 class Config:
     try:
         if not os.path.exists('config.json'):
-            print('No config file detected, creating one...\n')
+            print('No config file detected, creating one...')
             shutil.copy('example_config.json', 'config.json')
 
-            with open('config.json', 'r') as file:
-                data = file.read()
+            with open('config.json', 'r') as f:
+                data = json.load(f)
 
-            input_token = input("Provide the discord API access token: ").strip()
-            new_data = data.replace('Your_token_here', input_token)
+            input_token = input('Please provide the discord API access token:\n>').strip()
+            data['key'] = input_token
 
-            with open('config.json', 'w') as file:
-                file.write(new_data)
+            with open('config.json', 'w') as f:
+                json.dump(data, f, indent=2)
 
-        with open('config.json') as f:
+        with open('config.json', 'r') as f:
             config = json.load(f)
 
         key = config['key']
