@@ -59,19 +59,19 @@ class Bot(commands.Bot):
                                                                  prompt=prompt,
                                                                  negative_prompt=n_prompt,
                                                                  height=int(height), width=int(width))
-                content = f'Prompt: {str(prompt).strip()}'
+                content = f'Model: {self.model.name}\nPrompt: {prompt.strip()}'
                 await interaction.followup.send(content=content,
                                                 file=discord.File(filename=filename, fp=filepath),
                                                 view=ShowResult(
                                                     prompt=prompt, n_prompt=n_prompt, width=width,
                                                     height=height, sampler=sampler, steps=steps, skip=skip, scale=scale,
-                                                    seed=seed
+                                                    seed=seed, name=self.model.name
                                                 ))
             except Exception as e:
                 await interaction.followup.send(f'An error occurred: {e}')
 
     async def generate_image(self, interaction: discord.Message.interaction,
-                             sampler: str, skip: int, height:int, width:int, prompt: str, n_prompt: str, scale: float,
+                             sampler: str, skip: int, height: int, width: int, prompt: str, n_prompt: str, scale: float,
                              steps: int, seed: str):
         try:
             await interaction.response.defer(thinking=True)
@@ -85,13 +85,13 @@ class Bot(commands.Bot):
                                                              prompt=prompt,
                                                              negative_prompt=n_prompt,
                                                              height=height, width=width)
-            content = f'Prompt: {str(prompt).strip()}'
+            content = f'Model: {self.model.name}\nPrompt: {prompt.strip()}'
             await interaction.followup.send(content=content,
                                             file=discord.File(filename=filename, fp=filepath),
                                             view=ShowResult(
                                                 prompt=prompt, n_prompt=n_prompt, width=width,
                                                 height=height, sampler=sampler, steps=steps, skip=skip, scale=scale,
-                                                seed=seed
+                                                seed=seed, name=self.model.name
                                             ))
         except Exception as e:
             await interaction.followup.send(f'An error occurred: {e}')
