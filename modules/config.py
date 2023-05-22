@@ -12,8 +12,10 @@ class Config:
             with open('config.json', 'r') as f:
                 data = json.load(f)
 
-            input_token = input('Please provide the discord API access token:\n>').strip()
+            input_token = input('Please provide the discord API access token:\n> ').strip()
             data['key'] = input_token
+            input_token = input('Please provide the server id:\n> ').strip()
+            data['guild_id'] = input_token
 
             with open('config.json', 'w') as f:
                 json.dump(data, f, indent=2)
@@ -37,5 +39,7 @@ class Config:
 
     except KeyError as e:
         raise KeyError(f'Cant find {e} value. Update your config file.')
+    except ValueError as e:
+        raise ValueError(f'Server id should consist only with digits.')
     except (FileNotFoundError, OSError) as e:
         raise FileNotFoundError(f'Cant open a config file {e}')
