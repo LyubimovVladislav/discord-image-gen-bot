@@ -9,13 +9,13 @@ class ModalButton(ui.Button):
     async def callback(self, i: discord.Message.interaction):
         await i.response.send_message(
             f'Prompt:{self.view.prompt.strip()}\n'
-            f'Negative prompt: {self.view.n_prompt.strip() if self.view.n_prompt.strip() else "NONE"}\n'
+            f'Negative prompt: {self.view.n_prompt.strip() if self.view.n_prompt and self.view.n_prompt.strip() else "NONE"}\n'
             f'Resolution: {self.view.width}x{self.view.height}\n'
             f'Sampler: {self.view.sampler}\n'
             f'Inference steps: {self.view.steps}\n'
             f'CLIP skip: {self.view.skip}\n'
             f'Guidance scale: {self.view.scale}\n'
-            f'{f"Seed: {self.view.seed}" if self.view.seed.strip() else ""}'
+            f'{f"Seed: {self.view.seed}" if self.view.seed and self.view.seed.strip() else ""}'
         )
 
 
