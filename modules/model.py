@@ -26,7 +26,6 @@ class Model:
         self.name = name[-1] if name else ''
 
     def _get_image(self, prompt, negative_prompt, width, height, scale, steps, generator):
-        self.pipe.to('cuda')
         return self.pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
@@ -44,6 +43,7 @@ class Model:
         filepath = "images/" + filename
         # model settings
         self._set_scheduler(scheduler)
+
         self._set_clip_skip(skip - 1 if skip else Config.default_clip_skip - 1)
         generator = torch.Generator("cuda").manual_seed(Parser.get_seed(seed)) if seed else None
         self._get_image(
@@ -63,7 +63,9 @@ class Model:
                                                                torch_dtype=self.torch_dtype)
 
     def _set_scheduler(self, scheduler):
-        self.pipe.scheduler = self._get_scheduler(scheduler)
+        if not self.pipe.scheduler.__class__.__name__ == scheduler:
+            self.pipe.scheduler = self._get_scheduler(scheduler)
+            self.pipe.scheduler.to('cuda')
 
     # noinspection SpellCheckingInspection
     def _get_scheduler(self, scheduler):
