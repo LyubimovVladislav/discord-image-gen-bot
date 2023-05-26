@@ -26,6 +26,7 @@ class Model:
         self.name = name[-1] if name else ''
 
     def _get_image(self, prompt, negative_prompt, width, height, scale, steps, generator):
+        self.pipe.to('cuda')
         return self.pipe(
             prompt=prompt,
             negative_prompt=negative_prompt,
@@ -65,7 +66,7 @@ class Model:
     def _set_scheduler(self, scheduler):
         if not self.pipe.scheduler.__class__.__name__ == scheduler:
             self.pipe.scheduler = self._get_scheduler(scheduler)
-            self.pipe.scheduler.to('cuda')
+            # self.pipe.scheduler.to('cuda')
 
     # noinspection SpellCheckingInspection
     def _get_scheduler(self, scheduler):
