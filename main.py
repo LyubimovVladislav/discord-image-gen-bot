@@ -11,7 +11,6 @@ from modules.discord_ui.result_view import ShowResult
 from modules.config import Config
 from modules.discord_ui.image_params_view import ShowImageParams
 from modules.model import Model
-from modules.parser import Parser
 
 
 @singleton
@@ -54,7 +53,7 @@ class Bot(commands.Bot):
                 width, height = str(resolution).split('x')
                 async with semaphore:
                     filename, filepath = await asyncio.to_thread(self.model.generate_image,
-                                                                 sampler=sampler,
+                                                                 scheduler=sampler,
                                                                  skip=skip,
                                                                  scale=scale,
                                                                  seed=seed,
