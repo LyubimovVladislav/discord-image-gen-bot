@@ -79,7 +79,7 @@ class Bot(commands.Bot):
             await interaction.response.defer(thinking=True)
             async with semaphore:
                 filename, filepath = await asyncio.to_thread(self.model.generate_image,
-                                                             sampler=sampler,
+                                                             scheduler=sampler,
                                                              skip=skip,
                                                              scale=scale,
                                                              seed=seed,
