@@ -8,7 +8,7 @@ import torch
 from transformers import CLIPTextModel
 
 from decorators.timer import timer
-from modules.config import Config
+from modules import config
 from modules.parser import Parser
 
 
@@ -45,15 +45,15 @@ class Model:
         # model settings
         self._set_scheduler(scheduler)
 
-        self._set_clip_skip(skip - 1 if skip else Config.default_clip_skip - 1)
+        self._set_clip_skip(skip - 1 if skip else config.default_clip_skip - 1)
         generator = torch.Generator("cuda").manual_seed(Parser.get_seed(seed)) if seed else None
         self._get_image(
             prompt=prompt,
             negative_prompt=negative_prompt,
             width=width,
             height=height,
-            scale=scale if scale else Config.default_guidance_scale,
-            steps=steps if steps else Config.default_num_inference_steps,
+            scale=scale if scale else config.default_guidance_scale,
+            steps=steps if steps else config.default_num_inference_steps,
             generator=generator
         ).save(filepath, quality=self.quality)
         return filename, filepath

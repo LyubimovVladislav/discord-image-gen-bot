@@ -8,7 +8,7 @@ import os
 from decorators.singleton import singleton
 from modules.create_choises import create_resolution_choices, create_sampler_choices_from_list
 from modules.discord_ui.result_view import ShowResult
-from modules.config import Config
+from modules import config
 from modules.discord_ui.image_params_view import ShowImageParams
 from modules.model import Model
 
@@ -43,10 +43,10 @@ class Bot(commands.Bot):
         @app_commands.choices(sampler=create_sampler_choices_from_list(self.model.compatible))
         @app_commands.choices(resolution=create_resolution_choices())
         async def generate(interaction: discord.Message.interaction, prompt: str,
-                           resolution: str = Config.default_resolution, sampler: str = Config.default_scheduler,
-                           n_prompt: str = None, steps: int = Config.default_num_inference_steps,
-                           skip: int = Config.default_clip_skip,
-                           scale: float = Config.default_guidance_scale, seed: str = ''):
+                           resolution: str = config.default_resolution, sampler: str = config.default_scheduler,
+                           n_prompt: str = None, steps: int = config.default_num_inference_steps,
+                           skip: int = config.default_clip_skip,
+                           scale: float = config.default_guidance_scale, seed: str = ''):
 
             try:
                 await interaction.response.defer(thinking=True)
@@ -110,7 +110,6 @@ class Bot(commands.Bot):
 
 if __name__ == '__main__':
     semaphore = asyncio.BoundedSemaphore(1)
-    config = Config()
     folder = 'images'
     if not os.path.exists(folder):
         os.makedirs(folder)
