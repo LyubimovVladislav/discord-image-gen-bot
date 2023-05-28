@@ -106,6 +106,11 @@ class Bot(commands.Bot):
             print(e)
         print(f'Logged in as {self.user}')
         print('Ready!')
+        await self.change_presence(activity=
+                                   discord.Activity(type=discord.ActivityType.listening, name='commands'))
+
+    def __del__(self):
+        await self.change_presence(activity=None)
 
 
 if __name__ == '__main__':
