@@ -107,9 +107,9 @@ class Bot(commands.Bot):
         print(f'Logged in as {self.user}')
         print('Ready!')
         await self.change_presence(activity=
-                                   discord.Activity(type=discord.ActivityType.listening, name='commands'))
+                                   discord.Activity(type=discord.ActivityType.listening, name='your commands'))
 
-    def __del__(self):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.change_presence(activity=None)
 
 
