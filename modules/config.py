@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-from os.path import dirname
 
 
 class Config:

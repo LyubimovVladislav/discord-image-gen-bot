@@ -99,7 +99,6 @@ class Bot(commands.Bot):
             await interaction.followup.send(f'An error occurred: {e}')
 
     async def on_ready(self):
-        await self.wait_until_ready()
         try:
             await self.tree.sync(guild=self.guild)
         except Exception as e:
@@ -108,9 +107,6 @@ class Bot(commands.Bot):
         print('Ready!')
         await self.change_presence(activity=
                                    discord.Activity(type=discord.ActivityType.listening, name='your commands'))
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.change_presence(activity=None)
 
 
 if __name__ == '__main__':
