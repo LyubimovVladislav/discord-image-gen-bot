@@ -1,14 +1,15 @@
 import json
 import os
 import shutil
+from os.path import dirname
 
 
 class Config:
     def __init__(self):
         try:
-            if not os.path.exists('config.json'):
+            if not os.path.exists(f'{dirname(__file__)}/config.json'):
                 print('No config file detected, creating one...')
-                shutil.copy('example_config.json', 'config.json')
+                shutil.copy(f'{dirname(__file__)}/example_config.json', f'{dirname(__file__)}/config.json')
 
                 with open('config.json', 'r') as f:
                     data = json.load(f)
@@ -18,10 +19,10 @@ class Config:
                 input_token = input('Please provide the server id:\n> ').strip()
                 data['guild_id'] = input_token
 
-                with open('config.json', 'w') as f:
+                with open(f'{dirname(__file__)}/config.json', 'w') as f:
                     json.dump(data, f, indent=2)
 
-            with open('config.json', 'r') as f:
+            with open(f'{dirname(__file__)}/config.json', 'r') as f:
                 config = json.load(f)
 
             self.key = config['key']
