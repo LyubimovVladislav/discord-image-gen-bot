@@ -1,5 +1,5 @@
 diffusers~=0.16.1
-pillow~=9.5.0
+pillow>=v10.0.1
 discord~=2.2.3
 torch~=2.0.1
 transformers~=4.29.0
